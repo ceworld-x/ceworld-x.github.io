@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CE的世界</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color:#ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            height: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            position: relative;
+            margin-left: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 5px;
+            transition: color 0.3s ease;
+            display: block;
+        }
+        
+        .nav-links a:hover {
+            color: #f60;
+        }
+        
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #f60;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* 汉堡菜单按钮 */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            width: 30px;
+            height: 20px;
+            position: relative;
+            z-index: 1001;
+        }
+        
+        .hamburger span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #333;
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: .25s ease-in-out;
+        }
+        
+        .hamburger span:nth-child(1) {
+            top: 0px;
+        }
+        
+        .hamburger span:nth-child(2), .hamburger span:nth-child(3) {
+            top: 9px;
+        }
+        
+        .hamburger span:nth-child(4) {
+            top: 18px;
+        }
+        
+        .hamburger.open span:nth-child(1) {
+            top: 9px;
+            width: 0%;
+            left: 50%;
+        }
+        
+        .hamburger.open span:nth-child(2) {
+            transform: rotate(45deg);
+        }
+        
+        .hamburger.open span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+        
+        .hamburger.open span:nth-child(4) {
+            top: 9px;
+            width: 0%;
+            left: 50%;
+        }
+        
+        /* 主要内容区域 */
+        .main-content {
+            padding-top: 90px; /* 导航栏高度 + 额外空间 */
+            min-height: 100vh;
+        }
+        
+        .hero-section {
+            height: 80vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("webdata/photos/company-about-background.jpg") no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            padding: 0 20px;
+        }
+        
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #f60;
+            color: #ffffff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #f60;
+            animation: fadeInUp 1s ease 0.4s;
+            animation-fill-mode: both;
+        }
+        
+        .btn:hover {
+            background-color: transparent;
+            color: #fff;
+        }
+        
+        /* 关于我们部分 */
+        .about-section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background-color: #f60;
+        }
+        
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 40px;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.5s ease;
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* 服务部分 */
+        .contact-section img{
+            width:30%;
+        }
+        .services-section {
+            padding: 80px 5%;
+            background-color: #f9f9f9;
+        }
+        
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .services-grid .btn:hover {
+            background-color: transparent;
+            color: #000000;
+        }
+
+        .service-card {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-icon {
+            height: 200px;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: #f60;
+        }
+        
+        .service-content {
+            padding: 25px;
+        }
+        
+        .service-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .service-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .read-more {
+            color: #f60;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .read-more:hover {
+            transform: translateX(5px);
+        }
+        
+        .read-more span {
+            margin-left: 5px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .read-more:hover span {
+            margin-left: 10px;
+        }
+        
+        /* 联系我们部分 */
+        .contact-section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 40px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .contact-info p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        .contact-details {
+            margin-bottom: 30px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .contact-icon {
+            margin-right: 15px;
+            min-width: 20px;
+            color: #f60;
+        }
+        
+        .contact-text {
+            color: #666;
+        }
+        
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #f60;
+            outline: none;
+        }
+        
+        textarea.form-control {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: #f60;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: #e55b00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(246, 102, 0, 0.3);
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: rgba(44, 62, 80, 0.9);
+            color: #ecf0f1;
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        /* 页脚导航样式 */
+        .footer-nav {
+            margin-bottom: 2rem;
+        }
+        
+        .footer-nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .footer-nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        
+        .footer-nav a:hover {
+            color: #3498db;
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .copyright {
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #bdc3c7;
+        }
+        
+        .copyright a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .copyright a:hover {
+            text-decoration: underline;
+        }
+        
+        .qr-codes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+        
+        .qr-code {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .qr-code img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 0.5rem;
+            background-color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .qr-code span {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+        }
+        
+        /* 右下角浮动按钮 */
+        .floating-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 99;
+        }
+        
+        .floating-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .floating-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        
+        .floating-button.customer-service {
+            background-color: #e74c3c;
+            text-decoration: none !important;
+        }
+        
+        .floating-button.customer-service:hover {
+            background-color: #c0392b;
+        }
+        
+        /* 按钮提示工具 */
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        
+        .tooltip:after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .floating-button:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            main {
+                width: calc(100% - 440px);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            main {
+                width: calc(100% - 400px);
+            }
+        }
+        
+        @media (max-width: 970px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+                margin: 1rem 0;
+                order: 2;
+            }
+            
+            .sidebar-left, .sidebar-right {
+                border: none;
+            }
+            
+            main {
+                width: 100%;
+                margin: 0 auto;
+                order: 1;
+            }
+            
+            .article-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+            }
+            
+            .nav-links li {
+                margin-left: 0;
+                margin-right: 1.5rem;
+            }
+            
+            .footer-nav ul {
+                gap: 1rem;
+            }
+            
+            .footer-nav a {
+                font-size: 1rem;
+                padding: 0.5rem;
+            }
+            
+            .qr-codes {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .floating-buttons {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .floating-button {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            main {
+                padding: 1.5rem;
+            }
+            
+            .article-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0.5rem;
+            }
+            
+            .qr-codes {
+                grid-template-columns: 1fr;
+            }
+            
+            .floating-buttons {
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+        
+        /* 侧边栏隐藏状态 */
+        .sidebar-hidden .sidebar {
+            width: 0;
+            overflow: hidden;
+            border: none;
+            box-shadow: none;
+        }
+        
+        .sidebar-hidden .sidebar .sidebar-content {
+            opacity: 0;
+        }
+        .contact-section a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .contact-section a:hover {
+            color: #f60;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        /* 动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media screen and (max-width: 992px) {
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-text {
+                padding-right: 0;
+                margin-bottom: 40px;
+            }
+            
+            .contact-container {
+                flex-direction: column;
+            }
+            
+            .contact-info {
+                padding-right: 0;
+                margin-bottom: 40px;
+            }
+            
+        }
+        
+        @media screen and (max-width: 768px) {
+            .navbar-container {
+                height: 60px;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: #fff;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .main-content {
+                padding-top: 80px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-section p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media screen and (max-width: 576px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 10px 25px;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .about-text h3, .contact-info h3 {
+                font-size: 1.5rem;
+            }
+            
+            .service-card {
+                margin-bottom: 20px;
+            }
+        }
+        .highlight{
+            color:#0084ff;
+        }
+        .floating-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 99;
+        }
+        
+        .floating-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .floating-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        
+        .floating-button.back-to-top {
+            background-color: #2ecc71;
+            display: none; /* 默认隐藏 */
+        }
+        
+        .floating-button.back-to-top:hover {
+            background-color: #27ae60;
+        }
+        
+        .floating-button.customer-service {
+            background-color: #e74c3c;
+            text-decoration: none !important;
+        }
+        
+        .floating-button.customer-service:hover {
+            background-color: #c0392b;
+        }
+        
+        /* 按钮提示工具 */
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        
+        .tooltip:after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .floating-button:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+        
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <a href="#"><img src="webdata/photos/logo-t-black.PNG" alt="公司Logo"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#about">账号介绍</a></li>
+                <li><a href="#services">视频</a></li>
+                <li><a href="#cooperate">商务合作</a></li>
+                <li><a href="#contact">联系我们</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="main-content">
+        <!-- 首页部分 -->
+        <section id="home" class="hero-section">
+            <h1>欢迎来到CE的世界</h1>
+            <a href="https://www.douyin.com/user/MS4wLjABAAAAnwqS1nfj91Ytfelu-Zi70CVrf2rjEZbcCJwzYQV2-wsOfXqEO_G_gWwnIo05Dh_v?from_tab_name=main" class="btn">看看我们的视频</a>
+        </section>
+
+        <!-- 关于我们部分 -->
+        <section id="about" class="about-section">
+            <div class="section-title">
+                <h2>账号矩阵</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h4>抖音</h4>
+                    <p>CE的世界、CE的第二个世界</p>
+                    <h4>视频号</h4>
+                    <p>CE的世界、小日有光、肥喵和胖虎、CE爱科技</p>
+                    <h4>小红书</h4>
+                    <p>CE的世界</p>
+                    <h4>BiliBili</h4>
+                    <p>CE的世界</p>
+                    <h4>公众号</h4>
+                    <p>CE的世界</p>
+                </div>
+                <div class="about-image">
+                    <img src="webdata/photos/background2.JPG" alt="关于我们">
+                </div>
+            </div>
+        </section>
+
+        <!-- 服务项目部分 -->
+        <section id="services" class="services-section">
+            <div class="services-container">
+                <div class="section-title">
+                    <h2>视频</h2>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i>🤖🆚🤖</i>
+                        </div>
+                        <div class="service-content">
+                            <h3>AI辩论赛：愚公应该移山还是搬家？</h3>
+                            <p>AI辩论赛，添加一名评委！愚公应该移山还是搬家？</p>
+                            <p>2024年10月</p>
+                            <a href="https://www.douyin.com/user/MS4wLjABAAAAnwqS1nfj91Ytfelu-Zi70CVrf2rjEZbcCJwzYQV2-wsOfXqEO_G_gWwnIo05Dh_v?from_tab_name=main&modal_id=7421924319393107254" class="read-more">观看视频 <span>→</span></a>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i>🔒🎮🔒</i>
+                        </div>
+                        <div class="service-content">
+                            <h3>自己编程防自己</h3>
+                            <p>有点儿搞笑！CE突发奇想，迅速编了一个防止自己玩游戏的程序</p>
+                            <p>2024年7月</p>
+                            <a href="https://www.douyin.com/user/MS4wLjABAAAAnwqS1nfj91Ytfelu-Zi70CVrf2rjEZbcCJwzYQV2-wsOfXqEO_G_gWwnIo05Dh_v?from_tab_name=main&modal_id=7392925433727110419" class="read-more">了解更多 <span>→</span></a>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i>❓📱❓</i>
+                        </div>
+                        <div class="service-content">
+                            <h3>触控屏的工作原理</h3>
+                            <p>老妈编视频的时候感觉又上了一节课！触控屏的工作原理</p>
+                            <p>2024年12月</p>
+                            <a href="https://www.douyin.com/user/MS4wLjABAAAAnwqS1nfj91Ytfelu-Zi70CVrf2rjEZbcCJwzYQV2-wsOfXqEO_G_gWwnIo05Dh_v?modal_id=7453309112986783015" class="read-more">了解更多 <span>→</span></a>
+                        </div>
+                    </div>
+                    <a href="https://www.douyin.com/user/MS4wLjABAAAAnwqS1nfj91Ytfelu-Zi70CVrf2rjEZbcCJwzYQV2-wsOfXqEO_G_gWwnIo05Dh_v?from_tab_name=main" class="btn">查看更多</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="cooperate" class="contact-section">
+            <div class="section-title">
+                <h2>商务合作</h2>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <p>请您在合作前先填写以下表格：<a href="https://www.wjx.cn/vm/htyx8rO.aspx#">点击直接前往</a></p>
+                    <h3>微信</h3>
+                    <p>联系微信：<span class="highlight">vivian820108</span>价值重构（请注明来意）</p>
+                    <img src="webdata/photos/qr4.JPG" alt="wechatqr">
+                    <p>或扫描上方二维码</p>
+                    <div class="contact-details">
+                        <h3>邮箱</h3>
+                        <div class="contact-item">
+                            <p>或联系邮箱（点击邮箱链接可以直接发送）</p>
+                            <div class="contact-icon">✉️</div>
+                            <div class="contact-text"><a href="mailto:hezuo-ceworld@outlook.com">hezuo-ceworld@outlook.com</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+        <!-- 联系我们部分 -->
+        <section id="contact" class="contact-section">
+            <div class="section-title">
+                <h2>联系我们</h2>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>与我们取得联系</h3>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-text">微信：vivian11301</div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">✉️</div>
+                            <div class="contact-text"><a href="mailto:service-ceworld@outlook.com">service-ceworld@outlook.com</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="您的称呼" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="您的邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="主题">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="您的留言" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">发送留言</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+            <div class="footer-content">
+                <div class="copyright">
+                    <p>© CE的世界 版权所有。</p>
+                    <p>本网站所有内容，包括但不限于文字、图片、代码、（除非有特别标注）、UI设计等，均受著作权法保护。未经书面许可，任何单位或个人不得以任何方式复制、转载、修改、传播或用于商业用途。</p>
+                    <p>本网站提供的技术文章和代码示例仅供参考学习，作者不对其准确性、完整性或实用性做出任何保证。使用本网站内容所产生的风险由使用者自行承担。</p>
+                    <p>联系我们：<a href="mailto:info@ceworld.example.com">info@ceworld.example.com</a></p>
+                </div>
+                
+                <div class="footer-nav">
+                    <ul>
+                        <li><a href="https://www.wjx.cn/vm/htyx8rO.aspx# ">商务合作</a></li>
+                        <li><a href="#">在线客服</a></li>
+                        <li><a href="#">联系</a></li>
+                        <li><a href="#">关于</a></li>
+                    </ul>
+                </div>
+
+                <div class="qr-codes">
+                    <div class="qr-code">
+                        <img src="webdata/photos/qr3.jpg" alt="微信公众号">
+                        <span>微信公众号</span>
+                    </div>
+                    <div class="qr-code">
+                        <img src="webdata/photos/qr2.PNG" alt="抖音账号">
+                        <span>抖音账号</span>
+                    </div>
+                    <div class="qr-code">
+                        <img src="webdata/photos/qr1.jpg" alt="视频号">
+                        <span>视频号</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+         <div class="floating-buttons">
+        <button class="floating-button back-to-top" id="backToTop">
+            <span class="tooltip">返回顶部</span>
+            ↑
+        </button>
+       <a href="#" class="floating-button customer-service" id="customerService" title="联系客服">
+            ?
+            <span class="tooltip">联系客服</span>
+        </a>
+    </div>
+        
+
+    <!-- JavaScript -->
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener("scroll", function() {
+            const navbar = document.querySelector(".navbar");
+            if (window.scrollY > 50) {
+                navbar.style.background = "#fff";
+                navbar.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
+            } else {
+                navbar.style.background = "#fff";
+                navbar.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.1)";
+            }
+        });
+        
+        // 汉堡菜单切换
+        const hamburger = document.querySelector(".hamburger");
+        const navLinks = document.querySelector(".nav-links");
+        
+        hamburger.addEventListener("click", function() {
+            this.classList.toggle("open");
+            navLinks.classList.toggle("active");
+        });
+        
+        // 点击导航链接关闭菜单
+        document.querySelectorAll(".nav-links a").forEach(link => {
+            link.addEventListener("click", () => {
+                hamburger.classList.remove("open");
+                navLinks.classList.remove("active");
+            });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll("a[href^=\"#\"]").forEach(anchor => {
+            anchor.addEventListener("click", function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute("href");
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+        
+        // 滚动动画
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll(".service-card, .about-text, .about-image, .contact-info, .contact-form");
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.opacity = "1";
+                    element.style.transform = "translateY(0)";
+                }
+            });
+        };
+        
+        // 初始化滚动动画样式
+        document.querySelectorAll(".service-card, .about-text, .about-image, .contact-info, .contact-form").forEach(element => {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(20px)";
+            element.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+        });
+        
+        // 监听滚动事件
+        window.addEventListener("scroll", animateOnScroll);
+        window.addEventListener("load", animateOnScroll);
+        
+        // 表单提交事件
+        const contactForm = document.querySelector(".contact-form form");
+        if (contactForm) {
+            contactForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+                alert("感谢您的留言！我们会尽快回复您。");
+                this.reset();
+            });
+        }
+        const backToTopBtn = document.getElementById('backToTop');
+            
+            if (backToTopBtn) {
+                // 监听滚动事件控制按钮显示/隐藏
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        backToTopBtn.style.display = 'flex';
+                    } else {
+                        backToTopBtn.style.display = 'none';
+                    }
+                });
+                
+                // 点击返回顶部
+                backToTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            document.getElementById('customerService').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('客服热线：400-123-4567\n工作时间：周一至周五 9:00-18:00\n邮箱：support@ceworld.example.com');
+        });
+    </script>
+</body>
+</html>
